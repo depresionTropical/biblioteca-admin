@@ -171,14 +171,15 @@ class Prestamo():
         return self._cursor.fetchone()[0]
 
     def update_status(self, id_prestamo):
-        try:
-            self._cursor.execute("UPDATE Biblioteca.Prestamo SET estatus = 1 WHERE idPrestamo = {}".format(id_prestamo))
-            self._conn.commit()
-            return self._cursor.rowcount
-        except Exception as e:
-            print("Error al actualizar el estatus:", e)
-            self._conn.rollback()
-            return -1  # O algún valor para manejar el error
+        print(id_prestamo)
+        # try:
+        #     self._cursor.execute("UPDATE Biblioteca.Prestamo SET estatus = 1 WHERE idPrestamo = {}".format(id_prestamo))
+        #     self._conn.commit()
+        #     return self._cursor.rowcount
+        # except Exception as e:
+        #     print("Error al actualizar el estatus:", e)
+        #     self._conn.rollback()
+        #     return -1  # O algún valor para manejar el error
 
 # db = Libro()
 # data={

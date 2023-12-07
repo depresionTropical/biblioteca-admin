@@ -1,42 +1,57 @@
 {% extends "components/layout.html" %} 
-{% block title %}Sign up{% endblock %} 
+{% block title %}Devoluciones{% endblock %} 
 {% block content %}
 <script>
+  
   document.addEventListener('DOMContentLoaded', function() {
     const clienteSelect = document.getElementById('clienteSelect');
     const libroSelect = document.getElementById('libroSelect');
+    const fechaPrestamoInput = document.getElementById('fecha_prestamo');
 
-    fetch('http://localhost:8000/get-client')
+    let prestamos = []; // Almacenar todos los préstamos
+
+    fetch('http://localhost:8000/get-press-table')
       .then(response => response.json())
       .then(data => {
-        data.forEach(cliente => {
-          const option = document.createElement('option');
-          option.value = cliente[0];
-          option.text = `${cliente[1]} ${cliente[2]}`;
-          clienteSelect.appendChild(option);
+        prestamos = data; // Almacenar los préstamos obtenidos
+        data.forEach(prestamo => {
+          const optionCliente = document.createElement('option');
+          optionCliente.value = prestamo['Cliente'];
+          optionCliente.text = prestamo['Cliente'];
+          clienteSelect.appendChild(optionCliente);
         });
       })
       .catch(error => console.error('Error:', error));
 
-    fetch('http://localhost:8000/get-books')
-      .then(response => response.json())
-      .then(data => {
-        data.forEach(libro => {
-          const option = document.createElement('option');
-          option.value = libro['id'];
-          option.text = libro['titulo'];
-          libroSelect.appendChild(option);
+    // Agregar un evento para capturar la selección del cliente
+    clienteSelect.addEventListener('change', function() {
+      const selectedCliente = clienteSelect.value;
+      if (selectedCliente) {
+        // Filtrar los préstamos para el cliente seleccionado
+        const librosCliente = prestamos.filter(prestamo => prestamo['Cliente'] === selectedCliente);
+        // Limpiar opciones anteriores de libros
+        libroSelect.innerHTML = '<option value="" selected disabled>Seleccione un libro</option>';
+        // Agregar libros asociados al cliente seleccionado
+        librosCliente.forEach(prestamo => {
+          const optionLibro = document.createElement('option');
+          optionLibro.value = prestamo['Libro'];
+          optionLibro.text = prestamo['Libro'];
+          libroSelect.appendChild(optionLibro);
         });
-      })
-      .catch(error => console.error('Error:', error));
+      }
+    });
+
+    // Agregar evento para seleccionar la fecha actual
+    fechaPrestamoInput.valueAsDate = new Date();
   });
 </script>
 
 <div class="row m-md-5 m-3">
-  <h1 class="col">Registrar un Préstamo</h1>
+  <h1 class="col">Registrar una Devolución</h1>
 </div>
 
-<form method="post" action="/insert-press" class="row g-3 mx-sm-5 mx-2">
+<form method="put" action="/return/" class="row g-3 mx-sm-5 mx-2">
+
   <div class="col-md-4">
     <label for="libroSelect" class="form-label">Libro</label>
     <select id="libroSelect" name="libro" class="form-select" required>
@@ -51,25 +66,20 @@
       <!-- Opciones de clientes se cargarán dinámicamente aquí -->
     </select>
   </div>
-  <!-- Otros campos del formulario si los hay -->
-  <!-- <div class="col-md-3">
-    <label for="fecha_prestamo" class="form-label">Fecha de Préstamo</label>
-    <input type="text" id="fecha_prestamo" name="fecha_prestamo" class="form-control" readonly>
+  <div class="col-md-3">
+    <label for="Fecha devolucion" class="form-label">Fecha Devolucion</label>
+    <input type="text" id="fecha_devolucion" name="fecha_devolucion" class="form-control" readonly>
     <script>
       var today = new Date().toISOString().split('T')[0];
-      document.getElementById("fecha_prestamo").value = today;
-    </script> -->
-    <div class="col-md-3">
-      <label for="fecha_prestamo" class="form-label">Fecha de Préstamo</label>
-      <input type="date" id="fecha_prestamo" name="fecha_prestamo" class="form-control" required>
-    </div>
+      document.getElementById("fecha_devolucion").value = today;
+    </script>
   </div>
-
   <div class="col-12">
     <button class="btn btn-primary" type="submit">Enviar</button>
   </div>
 </form>
 
-<!-- Resto del código HTML -->
+<!-- Otro contenido HTML si es necesario -->
 
 {% endblock %}
+

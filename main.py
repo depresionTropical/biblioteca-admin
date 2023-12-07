@@ -180,10 +180,20 @@ def get_book():
     return database
 
 
-@app.put('/update-book/{idPrestamo}')
-def update_book(idPrestamo: int):
-    #database = db.Prestamo().update_status(id_prestamo=idPrestamo)
-    print(idPrestamo)
-    return {'ok'}
+@app.put("/return")
+def update_return(libro:str,cliente:str,fecha_devolucion:str):
+    # Aquí debes tener la lógica para actualizar la devolución en tu base de datos
+    # return_id es el ID del préstamo que se va a actualizar
+    # return_data contiene los datos actualizados de la devolución
+
+    # Código para actualizar la devolución en la base de datos
+    database = db.Prestamo().update_status(libro,cliente,fecha_devolucion)
+    return {"message": f"Devolución con ID {libro} actualizada"}
+
+# Controlador para manejar solicitudes POST a /insert-return
+@app.get('/return',response_class=HTMLResponse)
+def signup(req: Request):
+    return template.TemplateResponse('devolucion_registro.html',{'request':req})
+
     
 
