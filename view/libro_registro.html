@@ -1,0 +1,107 @@
+{% extends "components/layout.html" %} {% block title %}Sign up{% endblock %} {%
+block content %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+  const selectAutores = document.getElementById('autoresSelect');
+
+  fetch('http://localhost:8000/get-author')
+    .then(response => response.json())
+    .then(data => {
+      data.forEach(autor => {
+        const option = document.createElement('option');
+        option.value = autor[0];
+        //option.text = `${autor[1]} ${autor[2]}`;
+        option.text = `${autor[1]} ${autor[2]}`;
+        selectAutores.appendChild(option);
+      });
+    })
+    .catch(error => console.error('Error:', error));
+
+  // Agregar un evento para capturar la selección
+  selectAutores.addEventListener('change', function() {
+    const selectedAutorId = selectAutores.value;
+    const selectedAutor = selectAutores.options[selectAutores.selectedIndex].text;
+  
+    if (selectedAutorId) {
+      console.log('Autor seleccionado:', selectedAutorId, selectedAutor);
+      // Aquí podrías hacer lo que necesites con la selección del autor
+    }
+  });
+});
+
+</script>
+<div class="row m-md-5 m-3">
+  <h1 class="col">Registrar un Libro</h1>
+</div>
+
+<form method="post" action="/insert-book" class="row g-3 mx-sm-5 mx-2">
+  <div class="col-md-4">
+    <label for="validationDefault01" class="form-label">Titulo</label>
+    <input
+      name="titulo"
+      type="text"
+      class="form-control"
+      id="validationDefault01"
+      required
+    />
+  </div>
+  <div class="col-md-4">
+    <label for="autoresSelect" class="form-label">Autor</label>
+    <select id="autoresSelect" name="autor" class="form-select" required>
+      <option value="" selected disabled>Seleccione un autor</option>
+      <!-- Opciones de autores se cargarán dinámicamente aquí -->
+    </select>
+  </div>
+  <!-- <div class="col-md-4">
+      <label for="validationDefaultUsername" class="form-label">Username</label>
+      <div class="input-group">
+        <span class="input-group-text" id="inputGroupPrepend2">@</span>
+        <input
+          name="username"
+          type="text"
+          class="form-control"
+          id="validationDefaultUsername"
+          aria-describedby="inputGroupPrepend2"
+          required
+        />
+      </div>
+    </div> -->
+  <!-- <div class="col-md-3">
+      <label for="validationDefault04" class="form-label">Country</label>
+      <select name="nacionalidad" class="form-select" id="validationDefault04" required>
+        <option selected disabled value="">Choose...</option>
+        <option value="ar">Argentina</option>
+        <option value="can">Canada</option>
+        <option value="co">Colombia</option>
+        <option value="usa">UU.EE</option>
+        <option value="ve">Venezuela</option>
+        <option value="mex">México</option>
+      </select>
+    </div> -->
+  <!-- <div class="col-md-3">
+      <label for="validationDefault05" class="form-label">Password</label>
+      <input
+        name="password_user"
+        type="password"
+        class="form-control"
+        id="validationDefault05"
+        required
+      />
+    </div> -->
+  <div class="col-md-3">
+    <label for="fecha_publicacion" class="form-label">Fecha Publicación</label>
+    <input
+      type="date"
+      id="fecha_publicacion"
+      name="fecha_publicacion"
+      class="form-control"
+      required
+      min="<?php echo date('Y-m-d'); ?>"
+    />
+  </div>
+
+  <div class="col-12">
+    <button class="btn btn-primary" type="submit">Send Data</button>
+  </div>
+</form>
+{% endblock %}

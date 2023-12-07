@@ -1,0 +1,191 @@
+{% extends "components/layout.html" %} 
+
+{% block title %}Sign up{% endblock %} 
+{% block content %}
+<script>
+  
+  document.addEventListener('DOMContentLoaded', function() {
+  const selectClientes = document.getElementById('clienteSelect');
+
+  fetch('http://localhost:8000/get-client')
+    .then(response => response.json())
+    .then(data => {
+      data.forEach(cliente => {
+        const option = document.createElement('option');
+        option.value = cliente[0];
+        option.text = `${cliente[1]} ${cliente[2]}`;
+        selectClientes.appendChild(option);
+      });
+    })
+    .catch(error => console.error('Error:', error));
+
+  selectClientes.addEventListener('change', function() {
+    const selectedClienteId = selectClientes.value;
+    const selectedCliente = selectClientes.options[selectClientes.selectedIndex].text;
+  
+    if (selectedClienteId) {
+      console.log('Cliente seleccionado:', selectedClienteId, selectedCliente);
+      // Aquí podrías hacer lo que necesites con la selección del cliente
+    }
+  });
+
+  const selectLibro = document.getElementById('libroSelect');
+
+  fetch('http://localhost:8000/get-book')
+    .then(response => response.json())
+    .then(libros => {
+      libros.forEach(libro => {
+        const option = document.createElement('option');
+        option.value = libro[0];
+        option.text = `${libro[1]}`;
+        selectLibro.appendChild(option);
+      });
+    })
+    .catch(error => console.error('Error:', error));
+
+  selectLibro.addEventListener('change', function() {
+    const selectedLibroId = selectLibro.value;
+    const selectedLibro = selectLibro.options[selectLibro.selectedIndex].text;
+  
+    if (selectedLibroId) {
+      console.log('Libro seleccionado:', selectedLibroId, selectedLibro);
+      // Aquí podrías hacer lo que necesites con la selección del libro
+    }
+  });
+});
+
+</script>
+  <div class="row m-md-5 m-3">
+    <h1 class="col">Registrar un Prestamo</h1>
+  </div>
+
+  <form method="post" action="/insert-press" class="row g-3 mx-sm-5 mx-2">
+    
+    <div class="col-md-4">
+      <label for="libroSelect" class="form-label">Libro</label>
+      <select id="libroSelect" name="libro" class="form-select" required>
+        <option value="" selected disabled>Seleccione un libro</option>
+        <!-- Opciones de autores se cargarán dinámicamente aquí -->
+      </select>
+      </div>
+    <div class="col-md-4">
+      <label for="clienteSelect" class="form-label">Cliente</label>
+      <select id="clienteSelect" name="cliente" class="form-select" required>
+        <option value="" selected disabled>Seleccione un cliente</option>
+        <!-- Opciones de autores se cargarán dinámicamente aquí -->
+      </select>
+    </div>
+    <!-- <div class="col-md-4">
+      <label for="validationDefaultUsername" class="form-label">Username</label>
+      <div class="input-group">
+        <span class="input-group-text" id="inputGroupPrepend2">@</span>
+        <input
+          name="username"
+          type="text"
+          class="form-control"
+          id="validationDefaultUsername"
+          aria-describedby="inputGroupPrepend2"
+          required
+        />
+      </div>
+    </div> -->
+    <!-- <div class="col-md-3">
+      <label for="validationDefault04" class="form-label">Country</label>
+      <select name="nacionalidad" class="form-select" id="validationDefault04" required>
+        <option selected disabled value="">Choose...</option>
+        <option value="ar">Argentina</option>
+        <option value="can">Canada</option>
+        <option value="co">Colombia</option>
+        <option value="usa">UU.EE</option>
+        <option value="ve">Venezuela</option>
+        <option value="mex">México</option>
+      </select>
+    </div> -->
+    <!-- <div class="col-md-3">
+      <label for="validationDefault05" class="form-label">Password</label>
+      <input
+        name="password_user"
+        type="password"
+        class="form-control"
+        id="validationDefault05"
+        required
+      />
+    </div> -->
+    <div class="col-md-3">
+      <label for="Fecha Prestamo" class="form-label">Fecha Préstamo</label>
+      <input type="text" id="fecha_prestamo" name="fecha_prestamo" class="form-control" readonly>
+      <script>
+        var today = new Date().toISOString().split('T')[0];
+        document.getElementById("fecha_prestamo").value = today;
+      </script>
+    </div>
+    <div class="col-12">
+      <button class="btn btn-primary" type="submit">Send Data</button>
+    </div>
+  </form>
+
+
+  <!-- tabla -->
+
+  <div class="row m-md-5 m-3">
+    <h1 class="col">Préstamos realizados</h1>
+  </div>
+  
+  <div id="tablaPrestamos" class="row mx-sm-5 mx-2">
+    <!-- Aquí se mostrará la tabla con los préstamos -->
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tablaPrestamos = document.getElementById('tablaPrestamos');
+  
+      fetch('http://localhost:8000/get-press-table')
+        .then(response => response.json())
+        .then(data => {
+          construirTablaPrestamos(data); // Llama a la función para construir la tabla con los datos obtenidos
+        })
+        .catch(error => console.error('Error:', error));
+    });
+  
+    function construirTablaPrestamos(data) {
+      if (data.length > 0) {
+        const table = document.createElement('table');
+        table.classList.add('table');
+  
+        // Crear la cabecera de la tabla
+        const header = table.createTHead();
+        const row = header.insertRow();
+        const headers = ['Cliente', 'Libro', 'Fecha de Préstamo'];
+  
+        headers.forEach(headerText => {
+          const th = document.createElement('th');
+          const text = document.createTextNode(headerText);
+          th.appendChild(text);
+          row.appendChild(th);
+        });
+  
+        // Agregar filas con datos de préstamos
+        const body = table.createTBody();
+        data.forEach(prestamo => {
+          const row = body.insertRow();
+          const values = [
+            prestamo['Cliente'],
+            prestamo['Libro'],
+            prestamo['Fecha de Préstamo']
+          ];
+          values.forEach(value => {
+            const cell = row.insertCell();
+            const text = document.createTextNode(value);
+            cell.appendChild(text);
+          });
+        });
+  
+        tablaPrestamos.appendChild(table);
+      } else {
+        tablaPrestamos.innerHTML = '<p>No hay préstamos realizados.</p>';
+      }
+    }
+  </script>
+  
+  
+{% endblock %}

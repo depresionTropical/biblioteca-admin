@@ -1,0 +1,66 @@
+{% extends "components/layout.html" %} 
+
+{% block title %}Sign up{% endblock %} 
+{% block content %}
+  <div class="row m-md-5 m-3">
+    <h1 class="col">Registrar un Cliente</h1>
+  </div>
+
+  <form method="post" action="/insert-client" class="row g-3 mx-sm-5 mx-2">
+    <div class="col-md-4">
+      <label for="validationDefault01" class="form-label">Nombre</label>
+      <input name="nombre" type="text" class="form-control" id="validationDefault01" required />
+    </div>
+    <div class="col-md-4">
+      <label for="validationDefault02" class="form-label">Apellido</label>
+      <input name="apellido" type="text" class="form-control" id="validationDefault02" required />
+    </div>
+    <!-- <div class="col-md-4">
+      <label for="validationDefaultUsername" class="form-label">Username</label>
+      <div class="input-group">
+        <span class="input-group-text" id="inputGroupPrepend2">@</span>
+        <input
+          name="username"
+          type="text"
+          class="form-control"
+          id="validationDefaultUsername"
+          aria-describedby="inputGroupPrepend2"
+          required
+        />
+      </div>
+    </div> -->
+    <!-- <div class="col-md-3">
+      <label for="validationDefault04" class="form-label">Country</label>
+      <select name="nacionalidad" class="form-select" id="validationDefault04" required>
+        <option selected disabled value="">Choose...</option>
+        <option value="ar">Argentina</option>
+        <option value="can">Canada</option>
+        <option value="co">Colombia</option>
+        <option value="usa">UU.EE</option>
+        <option value="ve">Venezuela</option>
+        <option value="mex">México</option>
+      </select>
+    </div> -->
+    <!-- <div class="col-md-3">
+      <label for="validationDefault05" class="form-label">Password</label>
+      <input
+        name="password_user"
+        type="password"
+        class="form-control"
+        id="validationDefault05"
+        required
+      />
+    </div> -->
+    <div class="col-md-3">
+      <label for="Fecha Alta" class="form-label">Fecha de Alta</label>
+      <input type="text" id="fecha_alta" name="fecha_alta" class="form-control" readonly>
+      <script>
+        var today = new Date().toISOString().split('T')[0];
+        document.getElementById("fecha_alta").value = today;
+      </script>
+    </div>
+    <div class="col-12">
+      <button class="btn btn-primary" type="submit">Send Data</button>
+    </div>
+  </form>
+{% endblock %}

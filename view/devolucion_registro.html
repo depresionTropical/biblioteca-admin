@@ -1,0 +1,75 @@
+{% extends "components/layout.html" %} 
+{% block title %}Sign up{% endblock %} 
+{% block content %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const clienteSelect = document.getElementById('clienteSelect');
+    const libroSelect = document.getElementById('libroSelect');
+
+    fetch('http://localhost:8000/get-client')
+      .then(response => response.json())
+      .then(data => {
+        data.forEach(cliente => {
+          const option = document.createElement('option');
+          option.value = cliente[0];
+          option.text = `${cliente[1]} ${cliente[2]}`;
+          clienteSelect.appendChild(option);
+        });
+      })
+      .catch(error => console.error('Error:', error));
+
+    fetch('http://localhost:8000/get-books')
+      .then(response => response.json())
+      .then(data => {
+        data.forEach(libro => {
+          const option = document.createElement('option');
+          option.value = libro['id'];
+          option.text = libro['titulo'];
+          libroSelect.appendChild(option);
+        });
+      })
+      .catch(error => console.error('Error:', error));
+  });
+</script>
+
+<div class="row m-md-5 m-3">
+  <h1 class="col">Registrar un Préstamo</h1>
+</div>
+
+<form method="post" action="/insert-press" class="row g-3 mx-sm-5 mx-2">
+  <div class="col-md-4">
+    <label for="libroSelect" class="form-label">Libro</label>
+    <select id="libroSelect" name="libro" class="form-select" required>
+      <option value="" selected disabled>Seleccione un libro</option>
+      <!-- Opciones de libros se cargarán dinámicamente aquí -->
+    </select>
+  </div>
+  <div class="col-md-4">
+    <label for="clienteSelect" class="form-label">Cliente</label>
+    <select id="clienteSelect" name="cliente" class="form-select" required>
+      <option value="" selected disabled>Seleccione un cliente</option>
+      <!-- Opciones de clientes se cargarán dinámicamente aquí -->
+    </select>
+  </div>
+  <!-- Otros campos del formulario si los hay -->
+  <!-- <div class="col-md-3">
+    <label for="fecha_prestamo" class="form-label">Fecha de Préstamo</label>
+    <input type="text" id="fecha_prestamo" name="fecha_prestamo" class="form-control" readonly>
+    <script>
+      var today = new Date().toISOString().split('T')[0];
+      document.getElementById("fecha_prestamo").value = today;
+    </script> -->
+    <div class="col-md-3">
+      <label for="fecha_prestamo" class="form-label">Fecha de Préstamo</label>
+      <input type="date" id="fecha_prestamo" name="fecha_prestamo" class="form-control" required>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <button class="btn btn-primary" type="submit">Enviar</button>
+  </div>
+</form>
+
+<!-- Resto del código HTML -->
+
+{% endblock %}
