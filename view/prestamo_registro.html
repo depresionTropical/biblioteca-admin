@@ -7,7 +7,7 @@
   document.addEventListener('DOMContentLoaded', function() {
   const selectClientes = document.getElementById('clienteSelect');
 
-  fetch('http://localhost:8000/get-client')
+  fetch('/get-client')
     .then(response => response.json())
     .then(data => {
       data.forEach(cliente => {
@@ -31,7 +31,7 @@
 
   const selectLibro = document.getElementById('libroSelect');
 
-  fetch('http://localhost:8000/get-book')
+  fetch('/get-book')
     .then(response => response.json())
     .then(libros => {
       libros.forEach(libro => {
@@ -139,7 +139,7 @@
     document.addEventListener('DOMContentLoaded', function() {
       const tablaPrestamos = document.getElementById('tablaPrestamos');
   
-      fetch('http://localhost:8000/get-press-table')
+      fetch('/get-press-table')
         .then(response => response.json())
         .then(data => {
           construirTablaPrestamos(data); // Llama a la función para construir la tabla con los datos obtenidos

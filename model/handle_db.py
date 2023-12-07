@@ -170,16 +170,48 @@ class Prestamo():
         ))
         return self._cursor.fetchone()[0]
 
-    def update_status(self, id_prestamo):
-        print(id_prestamo)
-        # try:
-        #     self._cursor.execute("UPDATE Biblioteca.Prestamo SET estatus = 1 WHERE idPrestamo = {}".format(id_prestamo))
-        #     self._conn.commit()
-        #     return self._cursor.rowcount
-        # except Exception as e:
-        #     print("Error al actualizar el estatus:", e)
-        #     self._conn.rollback()
-        #     return -1  # O algún valor para manejar el error
+    def update_status(self, nombre_libro, nombre_cliente, fecha_devolucion):
+        try:
+            # Obtener idLibro y idCliente basados en los nombres proporcionados
+            query_get_ids = """
+            SELECT Libro.idLibro, Cliente.idCliente
+            FROM Biblioteca.Libro AS Libro
+            JOIN Biblioteca.Cliente AS Cliente ON 1=1  -- JOIN ficticio para obtener ambos IDs
+            WHERE Libro.Titulo = %s AND Cliente.Nombre = %s;
+            """
+            self._cursor.execute(query_get_ids, (nombre_libro, nombre_cliente))
+            result = self._cursor.fetchone()
+
+            if result:
+                id_libro, id_cliente = result
+
+                # Obtener el idPrestamo para el libro y cliente con estatus 0
+                query_select = """
+                SELECT Prestamo.idPrestamos 
+                FROM Biblioteca.Prestamo AS Prestamo
+                WHERE Prestamo.idLibro = %s AND Prestamo.idCliente = %s AND Prestamo.estatus = 0;
+                """
+                self._cursor.execute(query_select, (id_libro, id_cliente))
+                id_prestamo = self._cursor.fetchone()
+
+                if id_prestamo:
+                    # Actualizar estatus a 1 y agregar fecha_devolucion
+                    query_update = "UPDATE Biblioteca.Prestamo SET estatus = 1, FechaDevolucion = %s WHERE idPrestamo = %s;"
+                    self._cursor.execute(query_update, (fecha_devolucion, id_prestamo[0]))
+                    self._conn.commit()
+                    return self._cursor.rowcount
+                else:
+                    print("No se encontró un préstamo pendiente para el libro y cliente proporcionados.")
+                    return 0  # O algún valor para manejar la falta de préstamo pendiente
+            else:
+                print("No se encontró el libro o el cliente.")
+                return -1  # O algún valor para manejar la falta de libro o cliente
+
+        except Exception as e:
+            print("Error al actualizar el estatus:", e)
+            self._conn.rollback()
+            return -1  # O algún valor para manejar el error
+
 
 # db = Libro()
 # data={

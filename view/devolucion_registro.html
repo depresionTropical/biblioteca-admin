@@ -10,7 +10,7 @@
 
     let prestamos = []; // Almacenar todos los préstamos
 
-    fetch('http://localhost:8000/get-press-table')
+    fetch('/get-press-table')
       .then(response => response.json())
       .then(data => {
         prestamos = data; // Almacenar los préstamos obtenidos
@@ -50,7 +50,7 @@
   <h1 class="col">Registrar una Devolución</h1>
 </div>
 
-<form method="put" action="/return/" class="row g-3 mx-sm-5 mx-2">
+<form method="put" action="/return" class="row g-3 mx-sm-5 mx-2">
 
   <div class="col-md-4">
     <label for="libroSelect" class="form-label">Libro</label>
