@@ -79,7 +79,6 @@ class Cliente():
     def get_id(self, autor:dict):
         self._cursor.execute("SELECT idCliente FROM Biblioteca.Cliente WHERE Nombre = '{}' AND '{}' = 'Apellido';".format(
             autor['nombre'],
-            autor['apellido']
         ))
         return self._cursor.fetchone()[0]
     
@@ -121,9 +120,9 @@ class Libro():
         return self._cursor.rowcount
     
     
-    def get_id(self, autor:dict):
-        self._cursor.execute("SELECT idLibro FROM Biblioteca.Libro WHERE Nombre = '{}';".format(
-            autor['titulo'],
+    def get_id(self, libro):
+        self._cursor.execute("SELECT idLibro FROM Biblioteca.Libro WHERE Titulo = '{}';".format(
+            libro,
         ))
         return self._cursor.fetchone()[0]
     
