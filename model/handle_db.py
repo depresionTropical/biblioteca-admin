@@ -141,7 +141,15 @@ class Prestamo():
 
     def get_all(self):
         try:
-            self._cursor.execute('''SELECT Cliente.Nombre AS cliente, Libro.Titulo AS libro, Prestamo.fechaPrestamos, Prestamo.estatus FROM Biblioteca.Prestamo JOIN Biblioteca.Cliente ON Prestamo.idCliente = Cliente.idCliente JOIN Biblioteca.Libro ON Prestamo.idLibro = Libro.idLibro;''')
+            self._cursor.execute('''
+    SELECT CONCAT(Cliente.Nombre, ' ', Cliente.Apellido) AS cliente,
+           Libro.Titulo AS libro,
+           Prestamo.fechaPrestamos,
+           Prestamo.estatus
+    FROM Biblioteca.Prestamo
+    JOIN Biblioteca.Cliente ON Prestamo.idCliente = Cliente.idCliente
+    JOIN Biblioteca.Libro ON Prestamo.idLibro = Libro.idLibro;
+''')
             prestamos = self._cursor.fetchall()
             print(prestamos)
             return prestamos
@@ -164,8 +172,8 @@ class Prestamo():
         return self._cursor.rowcount
     
     def get_id(self, autor:dict):
-        self._cursor.execute("SELECT idLibro FROM Biblioteca.prestamo WHERE Nombre = '{}';".format(
-            autor['idPrestamo'],
+        self._cursor.execute("SELECT idCliente FROM Biblioteca.Cliente WHERE Nombre = '{}' AND '{}' = 'Apellido';".format(
+            autor['nombre'],
         ))
         return self._cursor.fetchone()[0]
 
