@@ -189,27 +189,27 @@ def update_return(libro:str,cliente:str,fecha_devolucion:str, req:Request):
     # Código para actualizar la devolución en la base de datos
     database = db.Prestamo().update_status(libro,cliente,fecha_devolucion)
     print(f"libro { libro}  cliente {cliente} fecha {fecha_devolucion}")
-    
-    return {"message": f"Devolución con ID {libro} actualizada"}
+    print("return 2")
+    return database
 
 # Controlador para manejar solicitudes POST a /insert-return
-@app.get('/return',response_class=HTMLResponse)
-def signup(req: Request):
-    print("-----------------------------")
-    print(db.Libro().get_id(
-        req.query_params['libro']
-    ))
-    nombre, apellido = req.query_params['cliente'].split()
-    print(db.Cliente().get_id(
-        {
-            'nombre':nombre,
-            'apellido':apellido
-        })
-    )
-    
-    print(f"libro { req.query_params['libro']}  cliente {req.query_params['cliente']} fecha {req.query_params['fecha_devolucion']}")
-    #db.Prestamo().update_status(req.query_params['libro'],req.query_params['cliente'],req.query_params['fecha_devolucion'])
-    return template.TemplateResponse('/devolucion_registro.html',{'request':req})
+# @app.get('/return',response_class=HTMLResponse)
+# def signup(req: Request):
+#     print("-----------------------------")
+#     print(db.Libro().get_id(
+#         req.query_params['libro']
+#     ))
+#     nombre, apellido = req.query_params['cliente'].split()
+#     print(db.Cliente().get_id(
+#         {
+#             'nombre':nombre,
+#             'apellido':apellido
+#         })
+#     )
+#     print("return 2")
+#     print(f"libro { req.query_params['libro']}  cliente {req.query_params['cliente']} fecha {req.query_params['fecha_devolucion']}")
+#     #db.Prestamo().update_status(req.query_params['libro'],req.query_params['cliente'],req.query_params['fecha_devolucion'])
+#     return template.TemplateResponse('/devolucion_registro.html',{'request':req})
 
     
 
