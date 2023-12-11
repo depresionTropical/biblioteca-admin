@@ -199,10 +199,14 @@ def signup(req: Request):
     print(db.Libro().get_id(
         req.query_params['libro']
     ))
-
+    nombre, apellido = req.query_params['cliente'].split()
     print(db.Cliente().get_id(
-        req.query_params['cliente'])
+        {
+            'nombre':nombre,
+            'apellido':apellido
+        })
     )
+    
     print(f"libro { req.query_params['libro']}  cliente {req.query_params['cliente']} fecha {req.query_params['fecha_devolucion']}")
     #db.Prestamo().update_status(req.query_params['libro'],req.query_params['cliente'],req.query_params['fecha_devolucion'])
     return template.TemplateResponse('/devolucion_registro.html',{'request':req})

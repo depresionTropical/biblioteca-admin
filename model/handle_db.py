@@ -77,10 +77,16 @@ class Cliente():
         return self._cursor.rowcount
     
     def get_id(self, autor:dict):
-        self._cursor.execute("SELECT idCliente FROM Biblioteca.Cliente WHERE Nombre = '{}' AND '{}' = 'Apellido';".format(
+        self._cursor.execute("SELECT idCliente FROM Biblioteca.Cliente WHERE Nombre = '{}' AND '{}';".format(
             autor['nombre'],
+            autor['apellido']
         ))
-        return self._cursor.fetchone()[0]
+        result = self._cursor.fetchone()
+        if result is not None:
+            return result[0]  # Acceder al primer elemento del resultado
+        else:
+            return None  # Manejar el caso en que no haya resultados
+            
     
 class Libro():
 
