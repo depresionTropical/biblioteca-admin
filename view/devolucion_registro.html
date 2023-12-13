@@ -3,43 +3,42 @@
 <script>
   let prestamosData = []; // Variable para almacenar los datos
 
-document.addEventListener("DOMContentLoaded", function () {
-  const clienteSelect = document.getElementById("clienteSelect");
-  const libroSelect = document.getElementById("libroSelect");
-  const fechaDevolucionInput = document.getElementById("fecha_devolucion");
+  document.addEventListener("DOMContentLoaded", function () {
+    const clienteSelect = document.getElementById("clienteSelect");
+    const libroSelect = document.getElementById("libroSelect");
+    const fechaDevolucionInput = document.getElementById("fecha_devolucion");
 
-  fetch("/get-press-not-devolved")
-    .then((response) => response.json())
-    .then((data) => {
-      prestamosData = data; // Almacenar los datos en la variable
-      data.forEach((prestamo) => {
-        const optionCliente = document.createElement("option");
-        optionCliente.value = `${prestamo["Nombre"]} ${prestamo["Apellido"]}`;
-        optionCliente.text = `${prestamo["Nombre"]} ${prestamo["Apellido"]}`;
-        clienteSelect.appendChild(optionCliente);
-      });
-    })
-    .catch((error) => console.error("Error:", error));
+    fetch("/get-press-not-devolved")
+      .then((response) => response.json())
+      .then((data) => {
+        prestamosData = data; // Almacenar los datos en la variable
+        data.forEach((prestamo) => {
+          const optionCliente = document.createElement("option");
+          optionCliente.value = `${prestamo["Nombre"]} ${prestamo["Apellido"]}`;
+          optionCliente.text = `${prestamo["Nombre"]} ${prestamo["Apellido"]}`;
+          clienteSelect.appendChild(optionCliente);
+        });
+      })
+      .catch((error) => console.error("Error:", error));
 
-  clienteSelect.addEventListener("change", function () {
-    const selectedCliente = clienteSelect.value;
-    if (selectedCliente) {
-      const librosCliente = prestamosData.filter((prestamo) => {
-        return (
-          `${prestamo["Nombre"]} ${prestamo["Apellido"]}` ===
-          selectedCliente
-        );
-      });
-      libroSelect.innerHTML =
-        '<option value="" selected disabled>Seleccione un libro</option>';
-      librosCliente.forEach((prestamo) => {
-        const optionLibro = document.createElement("option");
-        optionLibro.value = prestamo["Libro"];
-        optionLibro.text = prestamo["Libro"];
-        libroSelect.appendChild(optionLibro);
-      });
-    }
-  });
+    clienteSelect.addEventListener("change", function () {
+      const selectedCliente = clienteSelect.value;
+      if (selectedCliente) {
+        const librosCliente = prestamosData.filter((prestamo) => {
+          return (
+            `${prestamo["Nombre"]} ${prestamo["Apellido"]}` === selectedCliente
+          );
+        });
+        libroSelect.innerHTML =
+          '<option value="" selected disabled>Seleccione un libro</option>';
+        librosCliente.forEach((prestamo) => {
+          const optionLibro = document.createElement("option");
+          optionLibro.value = prestamo["Libro"];
+          optionLibro.text = prestamo["Libro"];
+          libroSelect.appendChild(optionLibro);
+        });
+      }
+    });
 
     // Agregar evento para seleccionar la fecha actual
     //fechaPrestamoInput.valueAsDate = new Date();
@@ -52,6 +51,61 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
   });
+  document.addEventListener("DOMContentLoaded", function () {
+    const tablaPrestamos = document.getElementById("tablaPrestamos");
+
+    fetch("/get-press-table-devolved")
+      .then((response) => response.json())
+      .then((data) => {
+        construirTablaPrestamos(data); // Llama a la función para construir la tabla con los datos obtenidos
+      })
+      .catch((error) => console.error("Error:", error));
+  });
+
+  function construirTablaPrestamos(data) {
+    if (data.length > 0) {
+      const table = document.createElement("table");
+      table.classList.add("table");
+
+      // Crear la cabecera de la tabla
+      const header = table.createTHead();
+      const row = header.insertRow();
+      const headers = [
+        "Cliente",
+        "Libro",
+        "Fecha de Préstamo",
+        "Fecha de Devolución",
+      ];
+
+      headers.forEach((headerText) => {
+        const th = document.createElement("th");
+        const text = document.createTextNode(headerText);
+        th.appendChild(text);
+        row.appendChild(th);
+      });
+
+      // Agregar filas con datos de préstamos
+      const body = table.createTBody();
+      data.forEach((prestamo) => {
+        const row = body.insertRow();
+        const values = [
+          prestamo["Cliente"],
+          prestamo["Libro"],
+          prestamo["Fecha de Préstamo"],
+          prestamo["Fecha de Devolución"],
+        ];
+        values.forEach((value) => {
+          const cell = row.insertCell();
+          const text = document.createTextNode(value);
+          cell.appendChild(text);
+        });
+      });
+
+      tablaPrestamos.appendChild(table);
+    } else {
+      tablaPrestamos.innerHTML = "<p>No hay devoluciones realizadas.</p>";
+    }
+  }
 </script>
 
 <div class="row m-md-5 m-3">
@@ -93,5 +147,8 @@ document.addEventListener("DOMContentLoaded", function () {
 </form>
 
 <!-- Otro contenido HTML si es necesario -->
+<div id="tablaPrestamos" class="row mx-sm-5 mx-2">
+  <!-- Aquí se mostrará la tabla con los préstamos -->
+</div>
 
 {% endblock %}

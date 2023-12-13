@@ -148,14 +148,33 @@ class Prestamo():
     def get_all(self):
         try:
             self._cursor.execute('''
-    SELECT CONCAT(Cliente.Nombre, ' ', Cliente.Apellido) AS cliente,
-           Libro.Titulo AS libro,
-           Prestamo.fechaPrestamos,
-           Prestamo.estatus
-    FROM Biblioteca.Prestamo
-    JOIN Biblioteca.Cliente ON Prestamo.idCliente = Cliente.idCliente
-    JOIN Biblioteca.Libro ON Prestamo.idLibro = Libro.idLibro;
-''')
+                                SELECT CONCAT(Cliente.Nombre, ' ', Cliente.Apellido) AS cliente,
+                                Libro.Titulo AS libro,
+                                Prestamo.fechaPrestamos,
+                                Prestamo.estatus
+                                FROM Biblioteca.Prestamo
+                                JOIN Biblioteca.Cliente ON Prestamo.idCliente = Cliente.idCliente
+                                JOIN Biblioteca.Libro ON Prestamo.idLibro = Libro.idLibro
+                                WHERE Prestamo.estatus = 0;
+            ''')
+            prestamos = self._cursor.fetchall()
+            return prestamos
+        except Exception as e:
+            print("Error al obtener los datos de Prestamos:", e)
+            return []
+    def get_press_devolved(self):
+        try:
+            self._cursor.execute('''
+                                SELECT CONCAT(Cliente.Nombre, ' ', Cliente.Apellido) AS cliente,
+                                Libro.Titulo AS libro,
+                                Prestamo.fechaPrestamos,
+                                Prestamo.fecha_devolucion,
+                                Prestamo.estatus
+                                FROM Biblioteca.Prestamo
+                                JOIN Biblioteca.Cliente ON Prestamo.idCliente = Cliente.idCliente
+                                JOIN Biblioteca.Libro ON Prestamo.idLibro = Libro.idLibro
+                                WHERE Prestamo.estatus = 1;
+            ''')
             prestamos = self._cursor.fetchall()
             return prestamos
         except Exception as e:

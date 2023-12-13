@@ -152,6 +152,20 @@ def get_book():
         for prestamo in prestamos
     ]
     return formatted_prestamos
+@app.get('/get-press-table-devolved')
+def get_book():
+    prestamos = db.Prestamo().get_press_devolved()
+    print(prestamos)
+    formatted_prestamos = [
+        {
+            'Libro': prestamo[1],
+            'Cliente': prestamo[0],
+            'Fecha de Préstamo': prestamo[2],
+            'Fecha de Devolución': prestamo[3]
+        }
+        for prestamo in prestamos
+    ]
+    return formatted_prestamos
 
 
 
