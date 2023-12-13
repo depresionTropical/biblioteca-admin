@@ -1,54 +1,52 @@
-{% extends "components/layout.html" %} 
-{% block title %}Devoluciones{% endblock %} 
-{% block content %}
+{% extends "components/layout.html" %} {% block title %}Devoluciones{% endblock
+%} {% block content %}
 <script>
-  
-  document.addEventListener('DOMContentLoaded', function() {
-    const clienteSelect = document.getElementById('clienteSelect');
-    const libroSelect = document.getElementById('libroSelect');
-    const fechaPrestamoInput = document.getElementById('fecha_prestamo');
+  document.addEventListener("DOMContentLoaded", function () {
+    const clienteSelect = document.getElementById("clienteSelect");
+    const libroSelect = document.getElementById("libroSelect");
+    const fechaDevolucionInput = document.getElementById("fecha_devolucion");
 
-    let prestamos = []; // Almacenar todos los préstamos
-
-    fetch('/get-press-table')
-      .then(response => response.json())
-      .then(data => {
-        prestamos = data; // Almacenar los préstamos obtenidos
-        data.forEach(prestamo => {
-          const optionCliente = document.createElement('option');
-          optionCliente.value = prestamo['Cliente'];
-          optionCliente.text = prestamo['Cliente'];
+    fetch("/get-press-not-devolved")
+      .then((response) => response.json())
+      .then((data) => {
+        data.forEach((prestamo) => {
+          const optionCliente = document.createElement("option");
+          optionCliente.value = `${prestamo["Nombre"]} ${prestamo["Apellido"]}`;
+          optionCliente.text = `${prestamo["Nombre"]} ${prestamo["Apellido"]}`;
           clienteSelect.appendChild(optionCliente);
         });
       })
-      .catch(error => console.error('Error:', error));
+      .catch((error) => console.error("Error:", error));
 
-    // Agregar un evento para capturar la selección del cliente
-    clienteSelect.addEventListener('change', function() {
-  const selectedCliente = clienteSelect.value;
-  if (selectedCliente) {
-    const librosCliente = prestamos.filter(prestamo => prestamo['Cliente'] === selectedCliente);
-    libroSelect.innerHTML = '<option value="" selected disabled>Seleccione un libro</option>';
-    librosCliente.forEach(prestamo => {
-      const optionLibro = document.createElement('option');
-      optionLibro.value = prestamo['Libro'];
-      optionLibro.text = prestamo['Libro'];
-      libroSelect.appendChild(optionLibro);
+    clienteSelect.addEventListener("change", function () {
+      const selectedCliente = clienteSelect.value;
+      if (selectedCliente) {
+        const librosCliente = data.filter((prestamo) => {
+          return (
+            `${prestamo["Nombre"]} ${prestamo["Apellido"]}` === selectedCliente
+          );
+        });
+        libroSelect.innerHTML =
+          '<option value="" selected disabled>Seleccione un libro</option>';
+        librosCliente.forEach((prestamo) => {
+          const optionLibro = document.createElement("option");
+          optionLibro.value = prestamo["Libro"];
+          optionLibro.text = prestamo["Libro"];
+          libroSelect.appendChild(optionLibro);
+        });
+      }
     });
-  }
-});
 
     // Agregar evento para seleccionar la fecha actual
     //fechaPrestamoInput.valueAsDate = new Date();
-    document.addEventListener('DOMContentLoaded', function() {
-  const fechaDevolucionInput = document.getElementById('fecha_devolucion');
-  
-  if (fechaDevolucionInput) {
-    var today = new Date().toISOString().split('T')[0];
-    fechaDevolucionInput.value = today;
-  }
-});
-    
+    document.addEventListener("DOMContentLoaded", function () {
+      const fechaDevolucionInput = document.getElementById("fecha_devolucion");
+
+      if (fechaDevolucionInput) {
+        var today = new Date().toISOString().split("T")[0];
+        fechaDevolucionInput.value = today;
+      }
+    });
   });
 </script>
 
@@ -57,7 +55,6 @@
 </div>
 
 <form method="put" action="/return" class="row g-3 mx-sm-5 mx-2">
-
   <div class="col-md-4">
     <label for="libroSelect" class="form-label">Libro</label>
     <select id="libroSelect" name="libro" class="form-select" required>
@@ -74,9 +71,15 @@
   </div>
   <div class="col-md-3">
     <label for="Fecha devolucion" class="form-label">Fecha Devolucion</label>
-    <input type="text" id="fecha_devolucion" name="fecha_devolucion" class="form-control" readonly>
+    <input
+      type="text"
+      id="fecha_devolucion"
+      name="fecha_devolucion"
+      class="form-control"
+      readonly
+    />
     <script>
-      var today = new Date().toISOString().split('T')[0];
+      var today = new Date().toISOString().split("T")[0];
       document.getElementById("fecha_devolucion").value = today;
     </script>
   </div>
@@ -88,4 +91,3 @@
 <!-- Otro contenido HTML si es necesario -->
 
 {% endblock %}
-

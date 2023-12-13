@@ -226,4 +226,23 @@ class Prestamo():
             print("Error al actualizar el estatus:", e)
             self._conn.rollback()
             return -1  # O algún valor para manejar el error
+    # En tu archivo de manejo de base de datos
+# Agrega un nuevo método en tu clase Prestamo para obtener los préstamos no devueltos
+    def get_not_devolved(self):
+        try:
+            query = """
+            SELECT Cliente.Nombre, Cliente.Apellido, Libro.Titulo, Prestamo.fechaPrestamos
+            FROM Biblioteca.Prestamo AS Prestamo
+            JOIN Biblioteca.Cliente AS Cliente ON Prestamo.idCliente = Cliente.idCliente
+            JOIN Biblioteca.Libro AS Libro ON Prestamo.idLibro = Libro.idLibro
+            WHERE Prestamo.estatus = 0;
+            """
+            self._cursor.execute(query)
+            result = self._cursor.fetchall()
+            return result
+
+        except Exception as e:
+            print("Error al obtener préstamos no devueltos:", e)
+            return []
+
 

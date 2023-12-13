@@ -154,10 +154,20 @@ def get_book():
     return formatted_prestamos
 
 
-@app.get('/get-client-not-devolved')
-def get_client():
-    database = db.Cliente().get_all()
-    return database
+
+@app.get('/get-press-not-devolved')
+def get_not_devolved_press():
+    prestamos = db.Prestamo().get_not_devolved()  # Modifica esto en tu código
+    formatted_prestamos = [
+        {
+            'Libro': prestamo[2],
+            'Fecha de Préstamo': prestamo[3],
+            'Nombre': prestamo[0],
+            'Apellido': prestamo[1]
+        }
+        for prestamo in prestamos
+    ]
+    return formatted_prestamos
 
 @app.get('/get-client-not-devolved')
 def get_book():
