@@ -1,12 +1,18 @@
 import mysql.connector
+import os
+from dotenv import load_dotenv
+
+# Cargar variables de entorno desde el archivo .env
+load_dotenv()
+
 
 class Autor():
 
     def __init__(self) -> None:
         self._conn = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="admin1234"
+            host=os.environ.get('HOST'),
+            user=os.environ.get('USER_DATABASE'),
+            password=os.environ.get('PASSWORD')
         )
         self._cursor = self._conn.cursor()
 
@@ -46,9 +52,9 @@ class Cliente():
 
     def __init__(self) -> None:
         self._conn = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="admin1234"
+            host=os.environ.get('HOST'),
+            user=os.environ.get('USER_DATABASE'),
+            password=os.environ.get('PASSWORD')
         )
         self._cursor = self._conn.cursor()
 
@@ -92,9 +98,9 @@ class Libro():
 
     def __init__(self) -> None:
         self._conn = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="admin1234"
+            host=os.environ.get('HOST'),
+            user=os.environ.get('USER_DATABASE'),
+            password=os.environ.get('PASSWORD')
         )
         self._cursor = self._conn.cursor()
 
@@ -136,9 +142,9 @@ class Prestamo():
 
     def __init__(self) -> None:
         self._conn = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="admin1234"
+            host=os.environ.get('HOST'),
+            user=os.environ.get('USER_DATABASE'),
+            password=os.environ.get('PASSWORD')
         )
         self._cursor = self._conn.cursor()
 
