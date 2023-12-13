@@ -78,7 +78,6 @@ def insert_author(
     'nacionalidad':nacionalidad
     }
     database = db.Autor().insert(data_author)
-    print(nombre,apellido,nacionalidad)
     return RedirectResponse('/')
 
 @app.post('/insert-client')
@@ -93,7 +92,6 @@ def insert_author(
     'fecha_alta':fecha_alta
     }
     database = db.Cliente().insert(data_client)
-    print(type(data_client['fecha_alta']))
     return RedirectResponse('/cliente_registro')
 
 @app.post('/insert-book')
@@ -108,8 +106,6 @@ def insert_author(
     'fecha_publicacion':fecha_publicacion
     }
     database = db.Libro().insert(data_book)
-    #print(type(data_client['fecha_alta']))
-    #print(data_book['fecha_publicacion'])
     return RedirectResponse('/libro_registro')
 
 @app.post('/insert-press')
@@ -124,8 +120,6 @@ def insert_press(
     'fecha_prestamo':fecha_prestamo
     }
     database = db.Prestamo().insert(data_press)
-    #print(type(data_client['fecha_alta']))
-    #print(data_press['fecha_prestamo'])
     return RedirectResponse('/prestamo_registro')
 
 # get autor
@@ -133,27 +127,21 @@ def insert_press(
 @app.get('/get-author')
 def get_author():
     database = db.Autor().get_all()
-    #print(type(database))
     return database
 
 @app.get('/get-client')
 def get_client():
     database = db.Cliente().get_all()
-    #print(type(database))
     return database
 
 @app.get('/get-book')
 def get_book():
     database = db.Libro().get_all()
-    #print(type(database))
     return database
 
 
 @app.get('/get-press-table')
 def get_book():
-    #database = db.Prestamo().get_all()
-    #print(type(database))
-    # return database
     prestamos = db.Prestamo().get_all()
     formatted_prestamos = [
         {
@@ -163,20 +151,17 @@ def get_book():
         }
         for prestamo in prestamos
     ]
-    print(prestamos)
     return formatted_prestamos
 
 
 @app.get('/get-client-not-devolved')
 def get_client():
     database = db.Cliente().get_all()
-    #print(type(database))
     return database
 
 @app.get('/get-client-not-devolved')
 def get_book():
     database = db.Libro().get_all()
-    #print(type(database))
     return database
 
 
@@ -188,28 +173,15 @@ def update_return(libro:str,cliente:str,fecha_devolucion:str, req:Request):
 
     # Código para actualizar la devolución en la base de datos
     database = db.Prestamo().update_status(libro,cliente,fecha_devolucion)
-    print(f"libro { libro}  cliente {cliente} fecha {fecha_devolucion}")
-    print("return 2")
     return database
 
-# Controlador para manejar solicitudes POST a /insert-return
-# @app.get('/return',response_class=HTMLResponse)
-# def signup(req: Request):
-#     print("-----------------------------")
-#     print(db.Libro().get_id(
-#         req.query_params['libro']
-#     ))
-#     nombre, apellido = req.query_params['cliente'].split()
-#     print(db.Cliente().get_id(
-#         {
-#             'nombre':nombre,
-#             'apellido':apellido
-#         })
-#     )
-#     print("return 2")
-#     print(f"libro { req.query_params['libro']}  cliente {req.query_params['cliente']} fecha {req.query_params['fecha_devolucion']}")
-#     #db.Prestamo().update_status(req.query_params['libro'],req.query_params['cliente'],req.query_params['fecha_devolucion'])
-#     return template.TemplateResponse('/devolucion_registro.html',{'request':req})
+#Controlador para manejar solicitudes POST a /insert-return
+@app.get('/return',response_class=HTMLResponse)
+def signup(req: Request):
+
+    nombre, apellido = req.query_params['cliente'].split()
+    db.Prestamo().update_status(req.query_params['libro'],req.query_params['cliente'],req.query_params['fecha_devolucion'])
+    return template.TemplateResponse('/devolucion_registro.html',{'request':req})
 
     
 

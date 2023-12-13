@@ -157,7 +157,6 @@ class Prestamo():
     JOIN Biblioteca.Libro ON Prestamo.idLibro = Libro.idLibro;
 ''')
             prestamos = self._cursor.fetchall()
-            print(prestamos)
             return prestamos
         except Exception as e:
             print("Error al obtener los datos de Prestamos:", e)
@@ -185,21 +184,22 @@ class Prestamo():
 
     def update_status(self, nombre_libro, nombre_cliente, fecha_devolucion):
         try:
+            nombre_cliente , apellido_cliente= nombre_cliente.split()
             query_get_ids = """
             SELECT Libro.idLibro, Cliente.idCliente
             FROM Biblioteca.Libro AS Libro
             JOIN Biblioteca.Cliente AS Cliente ON 1=1
-            WHERE Libro.Titulo = %s AND Cliente.Nombre = %s;
+            WHERE Libro.Titulo = %s AND Cliente.Nombre = %s AND Cliente.Apellido = %s;
             """
-            self._cursor.execute(query_get_ids, (nombre_libro, nombre_cliente))
+            self._cursor.execute(query_get_ids, (nombre_libro, nombre_cliente,apellido_cliente))
             result = self._cursor.fetchone()
 
             if not result:
-                print("No se encontró el libro o el cliente.")
+                print("*No se encontró el libro o el cliente.")
                 return -1  # O algún valor para manejar la falta de libro o cliente
 
             id_libro, id_cliente = result
-
+            print(f"*Se encontró el libro y el cliente: {id_libro}, {id_cliente}")
             query_select = """
             SELECT Prestamo.idPrestamos 
             FROM Biblioteca.Prestamo AS Prestamo
@@ -212,7 +212,7 @@ class Prestamo():
                 print("No se encontró un préstamo pendiente para el libro y cliente proporcionados.")
                 return 0  # O algún valor para manejar la falta de préstamo pendiente
 
-            query_update = "UPDATE Biblioteca.Prestamo SET estatus = 1, FechaDevolucion = %s WHERE idPrestamo = %s;"
+            query_update = "UPDATE Biblioteca.Prestamo SET estatus = 1, fecha_devolucion = %s WHERE idPrestamos = %s;"
             self._cursor.execute(query_update, (fecha_devolucion, id_prestamo[0]))
             self._conn.commit()
             
@@ -227,14 +227,3 @@ class Prestamo():
             self._conn.rollback()
             return -1  # O algún valor para manejar el error
 
-
-# db = Libro()
-# data={
-#     'titulo':'Las novelas de la selva',
-#     'idAutor':'30',
-#     'fecha_publicacion':'2023-12-05'
-# }
-# db.insert(data)
-# print(db.get_all())
-
-# #print(Libro().get_all())

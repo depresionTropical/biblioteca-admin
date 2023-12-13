@@ -25,24 +25,30 @@
 
     // Agregar un evento para capturar la selección del cliente
     clienteSelect.addEventListener('change', function() {
-      const selectedCliente = clienteSelect.value;
-      if (selectedCliente) {
-        // Filtrar los préstamos para el cliente seleccionado
-        const librosCliente = prestamos.filter(prestamo => prestamo['Cliente'] === selectedCliente);
-        // Limpiar opciones anteriores de libros
-        libroSelect.innerHTML = '<option value="" selected disabled>Seleccione un libro</option>';
-        // Agregar libros asociados al cliente seleccionado
-        librosCliente.forEach(prestamo => {
-          const optionLibro = document.createElement('option');
-          optionLibro.value = prestamo['Libro'];
-          optionLibro.text = prestamo['Libro'];
-          libroSelect.appendChild(optionLibro);
-        });
-      }
+  const selectedCliente = clienteSelect.value;
+  if (selectedCliente) {
+    const librosCliente = prestamos.filter(prestamo => prestamo['Cliente'] === selectedCliente);
+    libroSelect.innerHTML = '<option value="" selected disabled>Seleccione un libro</option>';
+    librosCliente.forEach(prestamo => {
+      const optionLibro = document.createElement('option');
+      optionLibro.value = prestamo['Libro'];
+      optionLibro.text = prestamo['Libro'];
+      libroSelect.appendChild(optionLibro);
     });
+  }
+});
 
     // Agregar evento para seleccionar la fecha actual
-    fechaPrestamoInput.valueAsDate = new Date();
+    //fechaPrestamoInput.valueAsDate = new Date();
+    document.addEventListener('DOMContentLoaded', function() {
+  const fechaDevolucionInput = document.getElementById('fecha_devolucion');
+  
+  if (fechaDevolucionInput) {
+    var today = new Date().toISOString().split('T')[0];
+    fechaDevolucionInput.value = today;
+  }
+});
+    
   });
 </script>
 
