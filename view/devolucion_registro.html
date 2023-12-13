@@ -1,41 +1,45 @@
 {% extends "components/layout.html" %} {% block title %}Devoluciones{% endblock
 %} {% block content %}
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const clienteSelect = document.getElementById("clienteSelect");
-    const libroSelect = document.getElementById("libroSelect");
-    const fechaDevolucionInput = document.getElementById("fecha_devolucion");
+  let prestamosData = []; // Variable para almacenar los datos
 
-    fetch("/get-press-not-devolved")
-      .then((response) => response.json())
-      .then((data) => {
-        data.forEach((prestamo) => {
-          const optionCliente = document.createElement("option");
-          optionCliente.value = `${prestamo["Nombre"]} ${prestamo["Apellido"]}`;
-          optionCliente.text = `${prestamo["Nombre"]} ${prestamo["Apellido"]}`;
-          clienteSelect.appendChild(optionCliente);
-        });
-      })
-      .catch((error) => console.error("Error:", error));
+document.addEventListener("DOMContentLoaded", function () {
+  const clienteSelect = document.getElementById("clienteSelect");
+  const libroSelect = document.getElementById("libroSelect");
+  const fechaDevolucionInput = document.getElementById("fecha_devolucion");
 
-    clienteSelect.addEventListener("change", function () {
-      const selectedCliente = clienteSelect.value;
-      if (selectedCliente) {
-        const librosCliente = data.filter((prestamo) => {
-          return (
-            `${prestamo["Nombre"]} ${prestamo["Apellido"]}` === selectedCliente
-          );
-        });
-        libroSelect.innerHTML =
-          '<option value="" selected disabled>Seleccione un libro</option>';
-        librosCliente.forEach((prestamo) => {
-          const optionLibro = document.createElement("option");
-          optionLibro.value = prestamo["Libro"];
-          optionLibro.text = prestamo["Libro"];
-          libroSelect.appendChild(optionLibro);
-        });
-      }
-    });
+  fetch("/get-press-not-devolved")
+    .then((response) => response.json())
+    .then((data) => {
+      prestamosData = data; // Almacenar los datos en la variable
+      data.forEach((prestamo) => {
+        const optionCliente = document.createElement("option");
+        optionCliente.value = `${prestamo["Nombre"]} ${prestamo["Apellido"]}`;
+        optionCliente.text = `${prestamo["Nombre"]} ${prestamo["Apellido"]}`;
+        clienteSelect.appendChild(optionCliente);
+      });
+    })
+    .catch((error) => console.error("Error:", error));
+
+  clienteSelect.addEventListener("change", function () {
+    const selectedCliente = clienteSelect.value;
+    if (selectedCliente) {
+      const librosCliente = prestamosData.filter((prestamo) => {
+        return (
+          `${prestamo["Nombre"]} ${prestamo["Apellido"]}` ===
+          selectedCliente
+        );
+      });
+      libroSelect.innerHTML =
+        '<option value="" selected disabled>Seleccione un libro</option>';
+      librosCliente.forEach((prestamo) => {
+        const optionLibro = document.createElement("option");
+        optionLibro.value = prestamo["Libro"];
+        optionLibro.text = prestamo["Libro"];
+        libroSelect.appendChild(optionLibro);
+      });
+    }
+  });
 
     // Agregar evento para seleccionar la fecha actual
     //fechaPrestamoInput.valueAsDate = new Date();
