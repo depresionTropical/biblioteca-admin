@@ -4,7 +4,7 @@ block content %}
   document.addEventListener('DOMContentLoaded', function() {
   const selectAutores = document.getElementById('autoresSelect');
 
-  fetch('http://localhost:5000/get-author')
+  fetch('/get-author')
     .then(response => response.json())
     .then(data => {
       data.forEach(autor => {
