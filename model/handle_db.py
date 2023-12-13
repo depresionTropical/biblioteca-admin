@@ -215,12 +215,13 @@ class Prestamo():
             query_update = "UPDATE Biblioteca.Prestamo SET estatus = 1, fecha_devolucion = %s WHERE idPrestamos = %s;"
             self._cursor.execute(query_update, (fecha_devolucion, id_prestamo[0]))
             self._conn.commit()
-            
+
             if self._cursor.rowcount > 0:
                 return self._cursor.rowcount  # Número de filas afectadas por la actualización
             else:
                 print("No se realizaron cambios en la tabla.")
                 return 0  # O algún valor para manejar el caso donde no se realizan cambios
+
 
         except Exception as e:
             print("Error al actualizar el estatus:", e)
